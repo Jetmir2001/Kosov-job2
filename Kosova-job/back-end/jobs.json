@@ -1,0 +1,12 @@
+ [
+  {
+    "id": 1,
+    "title": "Frontend Developer",
+    "company": "TechNova",
+    "location": "Prishtinë",
+    "type": "Remote",
+    "category": "IT",
+    "date": "2 days ago",
+    "logo": "webdev.jpg"
+  }
+]

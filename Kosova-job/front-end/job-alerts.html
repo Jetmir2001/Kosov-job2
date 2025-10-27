@@ -1,0 +1,124 @@
+ <!DOCTYPE html>
+<html lang="en" data-theme="corporate">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Alerts</title>
+
+  <!-- Tailwind + DaisyUI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2563EB", // refined blue
+            secondary: "#64748B", // slate tone
+            accent: "#16A34A", // green accent
+          },
+        },
+      },
+      daisyui: {
+        themes: ["corporate"],
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-gradient-to-b from-blue-50 to-white min-h-screen font-inter">
+
+  <!-- Header -->
+  <header class="bg-primary text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto flex items-center justify-between p-4">
+      <a href="agency.html" class="btn btn-ghost text-white hover:bg-blue-600 transition">
+        ← Back to Jobs
+      </a>
+      <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">Job Alerts</h1>
+      <div class="invisible">← Back</div> <!-- spacing balance -->
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto p-6 space-y-10">
+
+    <!-- Create Job Alert -->
+    <section class="backdrop-blur-md bg-white/80 border border-blue-100 shadow-xl rounded-2xl p-8 transition hover:shadow-2xl">
+      <h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 11c0-1.104.896-2 2-2h6a2 2 0 012 2v1a9 9 0 11-9-9h1" />
+        </svg>
+        Create a Job Alert
+      </h2>
+
+      <form id="alertForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="form-control">
+          <label class="label font-semibold text-sm">Keyword</label>
+          <input type="text" id="keyword" placeholder="e.g. Software Engineer" class="input input-bordered w-full" required />
+        </div>
+
+        <div class="form-control">
+          <label class="label font-semibold text-sm">Location</label>
+          <input type="text" id="location" placeholder="e.g. Berlin, Remote" class="input input-bordered w-full" required />
+        </div>
+
+        <div class="form-control">
+          <label class="label font-semibold text-sm">Job Type</label>
+          <select id="jobType" class="select select-bordered w-full" required>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Remote">Remote</option>
+            <option value="Internship">Internship</option>
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label font-semibold text-sm">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" class="input input-bordered w-full" required />
+        </div>
+
+        <div class="md:col-span-2">
+          <button type="submit" class="btn btn-primary w-full mt-2 hover:scale-[1.02] transition-transform">
+            💾 Save Alert
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Saved Alerts -->
+    <section class="bg-white border border-gray-100 shadow-lg rounded-2xl p-8 hover:shadow-xl transition">
+      <h2 class="text-xl font-semibold text-accent mb-4 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 13l4 4L19 7" />
+        </svg>
+        My Alerts
+      </h2>
+      <ul id="alertList" class="divide-y divide-gray-200 mt-4 text-gray-700">
+        <!-- Alerts will be added dynamically -->
+      </ul>
+      <p class="text-gray-500 text-sm mt-4 text-center" id="emptyMsg">No alerts yet — create one above!</p>
+    </section>
+
+  </main>
+
+  <!-- Subtle Fade-Up -->
+  <style>
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    section {
+      animation: fadeUp 0.8s ease-out both;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+  </style>
+
+  <script src="job-alerts.js"></script>
+</body>
+</html>

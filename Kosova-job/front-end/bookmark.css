@@ -1,0 +1,30 @@
+
+ .job-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform .2s;
+}
+.job-card:hover {
+  transform: translateY(-4px);
+}
+.job-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+.remove-btn {
+  background: #ef4444;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+.remove-btn:hover {
+  background: #dc2626;
+}

@@ -1,0 +1,84 @@
+ <!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobBlog - Career Insights</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- DaisyUI CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet">
+
+  <style>
+    /* Smooth read more animation */
+    .blog-desc {
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .category-btn.active {
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-base-100 font-sans">
+
+  <!-- Navbar -->
+  <nav class="navbar bg-primary text-primary-content shadow-lg sticky top-0 z-50">
+    <div class="flex-1 px-4">
+      <a href="index.html" class="btn btn-ghost normal-case text-xl font-bold">JobAgency</a>
+    </div>
+    <div class="flex-none px-4 space-x-2">
+      <a href="blog.html" class="btn btn-ghost">Blog</a>
+      <a href="agency.html" class="btn btn-ghost">Jobs</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-16">
+    <div class="container mx-auto text-center">
+      <h1 class="text-5xl md:text-6xl font-bold mb-4 animate-fadeIn">Career Insights & Tips</h1>
+      <p class="text-lg md:text-xl max-w-3xl mx-auto animate-fadeIn delay-200">
+        Stay updated with the latest trends, advice, and stories from the job market.
+      </p>
+    </div>
+  </section>
+
+  <!-- Category Bar -->
+  <section class="py-6 container mx-auto">
+    <div class="flex flex-wrap justify-center gap-3">
+      <button class="btn btn-sm btn-outline category-btn active" data-category="all">All</button>
+      <button class="btn btn-sm btn-outline category-btn" data-category="career">Career</button>
+      <button class="btn btn-sm btn-outline category-btn" data-category="resume">Resume</button>
+      <button class="btn btn-sm btn-outline category-btn" data-category="interview">Interview</button>
+      <button class="btn btn-sm btn-outline category-btn" data-category="jobs">Jobs</button>
+    </div>
+  </section>
+
+  <!-- Blog List -->
+  <section class="container mx-auto py-8">
+    <div id="blog-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Blog cards injected via JS -->
+    </div>
+  </section>
+
+  <!-- Blog Card Template -->
+  <template id="blog-card-template">
+    <div class="card bg-base-100 shadow-lg rounded-xl overflow-hidden transform transition-transform duration-300 hover:scale-105">
+      <figure><img src="" alt="Blog Image" class="w-full h-48 object-cover"></figure>
+      <div class="card-body">
+        <h2 class="card-title text-xl font-bold"></h2>
+        <p class="text-base-content/80 blog-desc max-h-16"></p>
+        <div class="card-actions justify-end mt-2">
+          <button class="btn btn-sm btn-primary read-more-btn">Read More</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script src="blog.js"></script>
+
+</body>
+</html>

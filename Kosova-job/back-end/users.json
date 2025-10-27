@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1757842733752,
+    "name": "Adrian Balaj",
+    "email": "jetmirbalaj39@gmail.com",
+    "password": "milik1122",
+    "role": "jobseeker",
+    "verified": true
+  },
+  {
+    "id": 1757842772076,
+    "name": "Adrian Balaj",
+    "email": "demmark225@gmail.com",
+    "password": "milik1122",
+    "role": "jobseeker",
+    "verified": true
+  },
+  {
+    "id": 1757952674920,
+    "name": "jetmir",
+    "email": "jeti22@gmail.com",
+    "password": "jeti1122",
+    "role": "jobseeker",
+    "verified": true
+  },
+  {
+    "id": 1758118813184,
+    "name": "Adrian Dada",
+    "email": "esem22@gmail.com",
+    "password": "mili1122",
+    "role": "employer",
+    "verified": true
+  },
+  {
+    "id": 1758118874020,
+    "name": "Adam Basha",
+    "email": "adam2@gmail.com",
+    "password": "mili",
+    "role": "jobseeker",
+    "verified": true
+  },
+  {
+    "id": 1758118903453,
+    "name": "adam ba",
+    "email": "esti2@gmail.com",
+    "password": "mili",
+    "role": "employer",
+    "verified": true
+  }
+]

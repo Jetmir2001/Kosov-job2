@@ -1,0 +1,38 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employer Dashboard</title>
+  <link rel="stylesheet" href="employers.css">
+</head>
+<body>
+  <header class="dashboard-header">
+    <h1>Employer Dashboard</h1>
+    <nav>
+      <a href="post-job.html">➕ Post a Job</a>
+      <a href="signup.html" id="logout-btn">🚪 Logout</a>
+    </nav>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="stats">
+      <div class="stat-card">
+        <h2 id="total-jobs">0</h2>
+        <p>Jobs Posted</p>
+      </div>
+      <div class="stat-card">
+        <h2 id="total-applicants">0</h2>
+        <p>Total Applicants</p>
+      </div>
+    </section>
+
+    <section class="jobs-section">
+      <h2>My Jobs</h2>
+      <div id="job-list" class="job-list"></div>
+    </section>
+  </main>
+
+  <script src="employers.js"></script>
+</body>
+</html>
