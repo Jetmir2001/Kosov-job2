@@ -7,10 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. AUTH CHECK
   // ------------------------------
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (!loggedInUser) {
-    window.location.href = "signup.html";
-    return;
-  }
+
 
   // ------------------------------
   // 2. JOB SEARCH & FILTER
@@ -104,16 +101,18 @@ jobData.forEach((job, index) => {
   `;
 
   // Apply Now button
-  const applyBtn = document.createElement("button");
-  applyBtn.textContent = "Apply Now";
-  applyBtn.classList.add("btn1");
-  applyBtn.addEventListener("click", () => {
-    sessionStorage.setItem("selectedJob", JSON.stringify(job));
-    window.location.href = "detaje.html";
-  });
+// Apply Now button
+ // Apply Now button
+const applyBtn = document.createElement("button");
+applyBtn.textContent = "Apply Now";
+applyBtn.classList.add("btn1");
+applyBtn.addEventListener("click", () => {
+  sessionStorage.setItem("selectedJob", JSON.stringify(job));
+  window.location.href = "detaje.html";
+});
 
-  card.appendChild(applyBtn);
-  jobListContainer.appendChild(card);
+card.appendChild(applyBtn);
+jobListContainer.appendChild(card);
 });
 
 
@@ -130,6 +129,12 @@ jobData.forEach((job, index) => {
 // ------------------------------
 // Toggle bookmark function
 function toggleBookmark(job, button) {
+  if (!loggedInUser) {
+    alert("Please log in to save jobs.");
+    window.location.href = "signup.html";
+    return;
+  }
+
   let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
 
   const index = bookmarks.findIndex(
@@ -137,12 +142,10 @@ function toggleBookmark(job, button) {
   );
 
   if (index === -1) {
-    // Add bookmark
     bookmarks.push(job);
     localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
     button.classList.add("active");
   } else {
-    // Remove bookmark
     bookmarks.splice(index, 1);
     localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
     button.classList.remove("active");
@@ -256,6 +259,8 @@ function toggleBookmark(job, button) {
 
 
 });
+
+
 
 
 
