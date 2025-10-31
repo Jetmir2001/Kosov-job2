@@ -82,6 +82,17 @@ button:hover {
   display: none;
 }
 
+
+small[id$="-error"] {
+  color: #dc3545; /* Bootstrap red tone */
+  font-size: 13px;
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+
 /* Mobile */
 @media (max-width: 480px) {
   .auth-card {
