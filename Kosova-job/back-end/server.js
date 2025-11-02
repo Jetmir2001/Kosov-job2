@@ -184,7 +184,7 @@ app.use("/api/*", (req, res) => {
 // SPA / FALLBACK ROUTE
 // ------------------------------
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "front-end", "signup.html"));
+  res.sendFile(path.join(__dirname, "..", "front-end", "mainpage.html"));
 });
 
 // ------------------------------
