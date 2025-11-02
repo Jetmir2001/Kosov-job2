@@ -33,40 +33,36 @@ document.addEventListener("DOMContentLoaded", () => {
 fetch("http://localhost:4000/api/jobs")
   .then(res => res.json())
   .then(serverJobs => {
-    if (serverJobs.length) {
+    if (serverJobs && serverJobs.length > 0) {
       jobs = serverJobs;
       localStorage.setItem("jobs", JSON.stringify(jobs));
-      renderJobs(jobs);
+    } else if (jobs.length === 0) {
+      // fallback if both backend and localStorage are empty
+      jobs = [
+        { title: "Frontend Developer", company: "TechNova", location: "Prishtinë", type: "Remote", category: "IT", date: "2 days ago", logo: "webdev.jpg" },
+        { title: "Backend Developer", company: "CodeWorks", location: "Prizren", type: "Full-time", category: "IT", date: "1 week ago", logo: "be.jpg" },
+        { title: "Team Member", company: "Burger King", location: "Gjakove", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "bg.jpg" },
+        { title: "Waiter", company: "Troja", location: "Prishtine", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "restaurant.jpg" },
+        { title: "Sales person", company: "CodeWorks", location: "Peja", type: "Full-time", category: "Sales", date: "1 week ago", logo: "hr.jpg" },
+        { title: "Mechanic", company: "Auto repair", location: "Prishtine", type: "Full-time", category: "Content", date: "1 week ago", logo: "ash.jpg" },
+        { title: "Construction", company: "BuiltA", location: "Gjilan", type: "Full-time", category: "Management", date: "1 week ago", logo: "csc.jpg" },
+        { title: "Accountant", company: "AL Bank", location: "Ferizaj", type: "Full-time", category: "Finance", date: "1 week ago", logo: "bank.jpg" },
+        { title: "Graphic designer", company: "GD", location: "Prishtine", type: "Full-time", category: "Design", date: "1 week ago", logo: "creat.jpg" },
+        { title: "Cyber security", company: "CodeWorks", location: "Peja", type: "Full-time", category: "IT", date: "1 week ago", logo: "csl.jpg" },
+      ];
+      localStorage.setItem("jobs", JSON.stringify(jobs));
     }
+    renderJobs(jobs);
   })
   .catch(err => {
     console.warn("Server not reachable, using localStorage jobs", err);
-    renderJobs(jobs);
+    if (jobs.length === 0) {
+      noResults.style.display = "block";
+    } else {
+      renderJobs(jobs);
+    }
   });
 
-
-  // ------------------------------
-  // 3. POPULATE DEFAULT JOBS IF NONE
-  // ------------------------------
-  if (jobs.length === 0) {
-    jobs = [
-      { title: "Frontend Developer", company: "TechNova", location: "Prishtinë", type: "Remote", category: "IT", date: "2 days ago", logo: "webdev.jpg" },
-      { title: "Backend Developer", company: "CodeWorks", location: "Prizren", type: "Full-time", category: "IT", date: "1 week ago", logo: "be.jpg" },
-      { title: "Team Member", company: "Burger King", location: "Gjakove", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "bg.jpg" },
-      { title: "Waiter", company: "Troja", location: "Prishtine", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "restaurant.jpg" },
-      { title: "Sales person", company: "CodeWorks", location: "Peja", type: "Full-time", category: "Sales", date: "1 week ago", logo: "hr.jpg" },
-      { title: "Mechanic", company: "Auto repair", location: "Prishtine", type: "Full-time", category: "Content", date: "1 week ago", logo: "ash.jpg" },
-      { title: "Construction", company: "BuiltA", location: "Gjilan", type: "Full-time", category: "Management", date: "1 week ago", logo: "csc.jpg" },
-      { title: "Accountant", company: "AL Bank", location: "Ferizaj", type: "Full-time", category: "Finance", date: "1 week ago", logo: "bank.jpg" },
-      { title: "Graphic designer", company: "GD", location: "Prishtine", type: "Full-time", category: "Design", date: "1 week ago", logo: "creat.jpg" },
-      { title: "Cyber security", company: "CodeWorks", location: "Peja", type: "Full-time", category: "IT", date: "1 week ago", logo: "csl.jpg" },
-    
-     
-
-      // Add more default jobs if needed
-    ];
-    localStorage.setItem("jobs", JSON.stringify(jobs));
-  }
 
   // ------------------------------
   // 4. RENDER JOBS FUNCTION
@@ -156,7 +152,7 @@ function toggleBookmark(job, button) {
 
 
   // Initial render
-  renderJobs(jobs);
+
 
   // ------------------------------
   // 5. FILTER JOBS FUNCTION
