@@ -1,5 +1,5 @@
-   // ================================
-// AGENCY.JS - FULLY WORKING VERSION
+// ================================
+// AGENCY.JS - FULLY REFACTORED VERSION
 // ================================
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -8,9 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ------------------------------
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
-
   // ------------------------------
-  // 2. JOB SEARCH & FILTER
+  // 2. DOM ELEMENTS
   // ------------------------------
   const keywordInput = document.getElementById("search-keyword");
   const locationInput = document.getElementById("search-location");
@@ -23,139 +22,129 @@ document.addEventListener("DOMContentLoaded", () => {
   const noResults = document.getElementById("no-results");
 
   let selectedCategory = "";
-  let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+  let jobs = [];
 
-  //trying backend
+  // ------------------------------
+  // 3. LOAD JOBS FROM BACKEND / LOCALSTORAGE
+  // ------------------------------
+  async function loadJobs() {
+    try {
+      const res = await fetch("http://localhost:4000/api/jobs");
+      const serverJobs = await res.json();
 
-
-
-// Try fetching from server as fallback
-fetch("http://localhost:4000/api/jobs")
-  .then(res => res.json())
-  .then(serverJobs => {
-    if (serverJobs && serverJobs.length > 0) {
-      jobs = serverJobs;
-      localStorage.setItem("jobs", JSON.stringify(jobs));
-    } else if (jobs.length === 0) {
-      // fallback if both backend and localStorage are empty
-      jobs = [
-        { title: "Frontend Developer", company: "TechNova", location: "Prishtinë", type: "Remote", category: "IT", date: "2 days ago", logo: "webdev.jpg" },
-        { title: "Backend Developer", company: "CodeWorks", location: "Prizren", type: "Full-time", category: "IT", date: "1 week ago", logo: "be.jpg" },
-        { title: "Team Member", company: "Burger King", location: "Gjakove", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "bg.jpg" },
-        { title: "Waiter", company: "Troja", location: "Prishtine", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "restaurant.jpg" },
-        { title: "Sales person", company: "CodeWorks", location: "Peja", type: "Full-time", category: "Sales", date: "1 week ago", logo: "hr.jpg" },
-        { title: "Mechanic", company: "Auto repair", location: "Prishtine", type: "Full-time", category: "Content", date: "1 week ago", logo: "ash.jpg" },
-        { title: "Construction", company: "BuiltA", location: "Gjilan", type: "Full-time", category: "Management", date: "1 week ago", logo: "csc.jpg" },
-        { title: "Accountant", company: "AL Bank", location: "Ferizaj", type: "Full-time", category: "Finance", date: "1 week ago", logo: "bank.jpg" },
-        { title: "Graphic designer", company: "GD", location: "Prishtine", type: "Full-time", category: "Design", date: "1 week ago", logo: "creat.jpg" },
-        { title: "Cyber security", company: "CodeWorks", location: "Peja", type: "Full-time", category: "IT", date: "1 week ago", logo: "csl.jpg" },
-      ];
-      localStorage.setItem("jobs", JSON.stringify(jobs));
+      if (Array.isArray(serverJobs) && serverJobs.length > 0) {
+        jobs = serverJobs;
+        localStorage.setItem("jobs", JSON.stringify(jobs));
+      } else {
+        const storedJobs = JSON.parse(localStorage.getItem("jobs")) || [];
+        jobs = storedJobs.length ? storedJobs : getDefaultJobs();
+      }
+    } catch (err) {
+      console.warn("Server not reachable, using localStorage jobs", err);
+      const storedJobs = JSON.parse(localStorage.getItem("jobs")) || [];
+      jobs = storedJobs.length ? storedJobs : getDefaultJobs();
     }
+
     renderJobs(jobs);
-  })
-  .catch(err => {
-    console.warn("Server not reachable, using localStorage jobs", err);
-    if (jobs.length === 0) {
+  }
+
+  function getDefaultJobs() {
+    const defaultJobs = [
+      { title: "Frontend Developer", company: "TechNova", location: "Prishtinë", type: "Remote", category: "IT", date: "2 days ago", logo: "webdev.jpg" },
+      { title: "Backend Developer", company: "CodeWorks", location: "Prizren", type: "Full-time", category: "IT", date: "1 week ago", logo: "be.jpg" },
+      { title: "Team Member", company: "Burger King", location: "Gjakove", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "bg.jpg" },
+      { title: "Waiter", company: "Troja", location: "Prishtine", type: "Full-time", category: "Hospitality", date: "1 week ago", logo: "restaurant.jpg" },
+      { title: "Sales person", company: "CodeWorks", location: "Peja", type: "Full-time", category: "Sales", date: "1 week ago", logo: "hr.jpg" },
+      { title: "Mechanic", company: "Auto repair", location: "Prishtine", type: "Full-time", category: "Content", date: "1 week ago", logo: "ash.jpg" },
+      { title: "Construction", company: "BuiltA", location: "Gjilan", type: "Full-time", category: "Management", date: "1 week ago", logo: "csc.jpg" },
+      { title: "Accountant", company: "AL Bank", location: "Ferizaj", type: "Full-time", category: "Finance", date: "1 week ago", logo: "bank.jpg" },
+      { title: "Graphic designer", company: "GD", location: "Prishtine", type: "Full-time", category: "Design", date: "1 week ago", logo: "creat.jpg" },
+      { title: "Cyber security", company: "CodeWorks", location: "Peja", type: "Full-time", category: "IT", date: "1 week ago", logo: "csl.jpg" },
+    ];
+    localStorage.setItem("jobs", JSON.stringify(defaultJobs));
+    return defaultJobs;
+  }
+
+  // ------------------------------
+  // 4. RENDER JOBS
+  // ------------------------------
+  function renderJobs(jobData) {
+    jobListContainer.innerHTML = "";
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+
+    if (jobData.length === 0) {
       noResults.style.display = "block";
-    } else {
-      renderJobs(jobs);
+      return;
     }
-  });
+    noResults.style.display = "none";
 
+    jobData.forEach((job, index) => {
+      const isBookmarked = bookmarks.some(b => b.title === job.title && b.company === job.company);
 
-  // ------------------------------
-  // 4. RENDER JOBS FUNCTION
-  // ------------------------------
-function renderJobs(jobData) {
-  let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+      const card = document.createElement("div");
+      card.classList.add("job-card", "fade-in");
+      card.dataset.category = job.category;
+      card.dataset.location = job.location;
+      card.dataset.type = job.type;
+      card.dataset.experience = job.experience || "";
 
- jobListContainer.innerHTML = ""; // clear container
+      card.innerHTML = `
+        <img src="${job.logo}" alt="${job.company} Logo" class="job-logo">
+        <h3>${job.title}</h3>
+        <p><strong>Company:</strong> ${job.company}</p>
+        <p><strong>Location:</strong> ${job.location}</p>
+        <p><strong>Type:</strong> ${job.type}</p>
+        <p><strong>Date:</strong> ${job.date}</p>
+        <button class="bookmark-btn ${isBookmarked ? "active" : ""}" data-index="${index}" title="Save Job">🔖</button>
+      `;
 
-jobData.forEach((job, index) => {
-  const isBookmarked = bookmarks.some(
-    b => b.title === job.title && b.company === job.company
-  );
+      // Apply Now button
+      const applyBtn = document.createElement("button");
+      applyBtn.textContent = "Apply Now";
+      applyBtn.classList.add("btn1");
+      applyBtn.addEventListener("click", () => {
+        sessionStorage.setItem("selectedJob", JSON.stringify(job));
+        window.location.href = "detaje.html";
+      });
 
-  const card = document.createElement("div");
-  card.classList.add("job-card", "fade-in");
-  card.dataset.category = job.category;
-  card.dataset.location = job.location;
-  card.dataset.type = job.type;
-  card.dataset.experience = job.experience || "";
-
-  card.innerHTML = `
-    <img src="${job.logo}" alt="${job.company} Logo" class="job-logo">
-    <h3>${job.title}</h3>
-    <p><strong>Company:</strong> ${job.company}</p>
-    <p><strong>Location:</strong> ${job.location}</p>
-    <p><strong>Type:</strong> ${job.type}</p>
-    <p><strong>Date:</strong> ${job.date}</p>
-    <button class="bookmark-btn ${isBookmarked ? "active" : ""}" 
-            data-index="${index}" 
-            title="Save Job">🔖</button>
-  `;
-
-  // Apply Now button
-// Apply Now button
- // Apply Now button
-const applyBtn = document.createElement("button");
-applyBtn.textContent = "Apply Now";
-applyBtn.classList.add("btn1");
-applyBtn.addEventListener("click", () => {
-  sessionStorage.setItem("selectedJob", JSON.stringify(job));
-  window.location.href = "detaje.html";
-});
-
-card.appendChild(applyBtn);
-jobListContainer.appendChild(card);
-});
-
-
-
-  // Attach bookmark listeners
-  document.querySelectorAll(".bookmark-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      const idx = e.target.dataset.index;
-      toggleBookmark(jobData[idx], e.target);
+      card.appendChild(applyBtn);
+      jobListContainer.appendChild(card);
     });
-  });
-}
 
-// ------------------------------
-// Toggle bookmark function
-function toggleBookmark(job, button) {
-  if (!loggedInUser) {
-    alert("Please log in to save jobs.");
-    window.location.href = "signup.html";
-    return;
+    // Bookmark event listeners
+    document.querySelectorAll(".bookmark-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = e.target.dataset.index;
+        toggleBookmark(jobData[idx], e.target);
+      });
+    });
   }
-
-  let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-
-  const index = bookmarks.findIndex(
-    b => b.title === job.title && b.company === job.company
-  );
-
-  if (index === -1) {
-    bookmarks.push(job);
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
-    button.classList.add("active");
-  } else {
-    bookmarks.splice(index, 1);
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
-    button.classList.remove("active");
-  }
-}
-
-
-
-
-  // Initial render
-
 
   // ------------------------------
-  // 5. FILTER JOBS FUNCTION
+  // 5. TOGGLE BOOKMARK
+  // ------------------------------
+  function toggleBookmark(job, button) {
+    if (!loggedInUser) {
+      alert("Please log in to save jobs.");
+      window.location.href = "signup.html";
+      return;
+    }
+
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    const index = bookmarks.findIndex(b => b.title === job.title && b.company === job.company);
+
+    if (index === -1) {
+      bookmarks.push(job);
+      button.classList.add("active");
+    } else {
+      bookmarks.splice(index, 1);
+      button.classList.remove("active");
+    }
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+  }
+
+  // ------------------------------
+  // 6. FILTER JOBS
   // ------------------------------
   function filterJobs() {
     const keyword = keywordInput.value.toLowerCase();
@@ -176,11 +165,9 @@ function toggleBookmark(job, button) {
     });
 
     renderJobs(filtered);
-    noResults.style.display = filtered.length === 0 ? "block" : "none";
   }
 
   searchBtn?.addEventListener("click", filterJobs);
-
   clearBtn?.addEventListener("click", () => {
     keywordInput.value = "";
     locationInput.value = "";
@@ -189,7 +176,6 @@ function toggleBookmark(job, button) {
     selectedCategory = "";
     categoryButtons.forEach(btn => btn.classList.remove("active"));
     renderJobs(jobs);
-    noResults.style.display = "none";
   });
 
   categoryButtons.forEach(btn => {
@@ -202,19 +188,12 @@ function toggleBookmark(job, button) {
   });
 
   // ------------------------------
-  // 6. JOB CARD NAVIGATION
-  // ------------------------------
-  window.goToJob = function(index) {
-    window.location.href = `detaje.html?id=${index}`;
-  };
-
-  // ------------------------------
-  // 7. USER ACCOUNT INFO (DROPDOWN)
+  // 7. USER ACCOUNT DROPDOWN
   // ------------------------------
   const accountIcon = document.getElementById("account-icon");
   const accountCard = document.getElementById("account-card");
 
-  if (accountIcon && accountCard) {
+  if (accountIcon && accountCard && loggedInUser) {
     document.getElementById("acc-name").textContent = loggedInUser.name;
     document.getElementById("acc-email").textContent = loggedInUser.email;
     document.getElementById("acc-role").textContent = loggedInUser.role;
@@ -239,25 +218,19 @@ function toggleBookmark(job, button) {
   }
 
   // ------------------------------
-  // 8. RESPONSIVE NAVBAR TOGGLE
+  // 8. RESPONSIVE NAVBAR
   // ------------------------------
   const hamburger = document.getElementById("hamburger");
   const navbar = document.getElementById("navbar");
-
   hamburger?.addEventListener("click", () => {
     navbar.classList.toggle("show");
   });
 
-
-
-
-
-
-
+  // ------------------------------
+  // 9. INITIAL LOAD
+  // ------------------------------
+  loadJobs();
 });
-
-
-
 
 
 
